@@ -10,19 +10,49 @@ namespace StudentRegister
     /// <summary>
     /// A class representing a student
     /// </summary>
-    public class Student
+    public class Student : INotifyPropertyChanged
     {
         private List<CourseResult> courseHistory;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertChanged(string propertyname = "")
+        {
+            //?. if not null do...
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+        }
+        private string first;
         /// <summary>
         /// Gets and sets the first name
         /// </summary>
-        public string First { get; set; }
-
+        public string First
+        {
+            get
+            {
+                return first;
+            }
+            set
+            {
+                first = value;
+                NotifyPropertChanged("First");
+            }
+        }
+        private string last;
         /// <summary>
         /// Gets and sets the last name
         /// </summary>
-        public string Last { get; set; }
+        public string Last
+        {
+            get
+            {
+                return last;
+            }
+            set
+            {
+                last = value;
+                NotifyPropertChanged("Last");
+            }
+        }
 
         /// <summary>
         /// Gets the course history
@@ -86,5 +116,22 @@ namespace StudentRegister
             courseHistory = new List<CourseResult>();
         }
 
+        public void CourseComplete(string name, uint hours, Grade grade, string semester)
+        {
+            CourseResult cr = new CourseResult(name, hours, grade, semester);
+            courseHistory.Add(cr);
+            NotifyPropertChanged("GPA");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"{Last}, {First}, ({GPA})";
+        }
+
+        
     }
 }
